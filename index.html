@@ -1,59 +1,213 @@
-<script>
-  const birth = new Date("2018-02-19T16:40:00");
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Les 3 petits – Joyeux Bordel</title>
+  <style>
+    body{
+      margin:0;
+      font-family:system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background:#0f0f0f;
+      color:#fff;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .wrap{
+      width:min(1100px, 100%);
+    }
+    h1{
+      margin:0 0 16px 0;
+      font-size:2rem;
+      letter-spacing:.5px;
+    }
+    .sub{
+      margin:0 0 24px 0;
+      opacity:.65;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:16px;
+    }
+    @media (max-width: 900px){
+      .grid{ grid-template-columns:1fr; }
+    }
+    .card{
+      background:#1b1b1b;
+      border-radius:18px;
+      padding:20px 20px 18px;
+      box-shadow:0 20px 60px rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .name{
+      font-size:1.8rem;
+      margin:0;
+    }
+    .born{
+      margin:6px 0 14px 0;
+      opacity:.7;
+    }
+    .age{
+      font-size:1.05rem;
+      line-height:1.65;
+    }
+    .age span{
+      font-weight:700;
+      color:#ffcc00;
+    }
+    hr{
+      border:0;
+      height:1px;
+      background:rgba(255,255,255,.12);
+      margin:14px 0;
+    }
+    .tiny{
+      font-size:.95rem;
+      opacity:.85;
+      line-height:1.55;
+    }
+    .footer{
+      margin-top:18px;
+      text-align:center;
+      opacity:.5;
+      font-size:.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Les 3 petits</h1>
+    <p class="sub">Âges en temps réel + stats absurdes. (Oui, c’est sérieux.)</p>
 
-  function updateAge() {
-    const now = new Date();
+    <div class="grid">
+      <div class="card" id="card-ulysse">
+        <h2 class="name">Ulysse</h2>
+        <div class="born" id="born-ulysse"></div>
+        <div class="age" id="age-ulysse"></div>
+      </div>
 
-    let years = now.getFullYear() - birth.getFullYear();
-    let months = now.getMonth() - birth.getMonth();
-    let days = now.getDate() - birth.getDate();
+      <div class="card" id="card-willow">
+        <h2 class="name">Willow</h2>
+        <div class="born" id="born-willow"></div>
+        <div class="age" id="age-willow"></div>
+      </div>
 
-    if (days < 0) {
-      months--;
-      const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-      days += prevMonth.getDate();
+      <div class="card" id="card-daryl">
+        <h2 class="name">Daryl</h2>
+        <div class="born" id="born-daryl"></div>
+        <div class="age" id="age-daryl"></div>
+      </div>
+    </div>
+
+    <div class="footer">joyeuxbordel.be — ça bouge, ça vit, ça grandit.</div>
+  </div>
+
+  <script>
+    // Dates (mois: 0=janvier)
+    const kids = [
+      {
+        key: "ulysse",
+        name: "Ulysse",
+        birth: new Date(2018, 1, 19, 16, 40, 0), // 19/02/2018 16:40
+      },
+      {
+        key: "willow",
+        name: "Willow",
+        birth: new Date(2019, 3, 20, 1, 30, 0),  // 20/04/2019 01:30 (approx)
+      },
+      {
+        key: "daryl",
+        name: "Daryl",
+        birth: new Date(2023, 2, 31, 14, 0, 0),  // 31/03/2023 14:00 (approx)
+      },
+    ];
+
+    function pad2(n){ return String(n).padStart(2, "0"); }
+
+    function formatBirth(d){
+      const dd = pad2(d.getDate());
+      const mm = pad2(d.getMonth() + 1);
+      const yyyy = d.getFullYear();
+      const hh = pad2(d.getHours());
+      const mi = pad2(d.getMinutes());
+      return `né le ${dd}/${mm}/${yyyy} à ${hh}h${mi}`;
     }
 
-    if (months < 0) {
-      years--;
-      months += 12;
+    function addYears(d, n){ const x = new Date(d); x.setFullYear(x.getFullYear() + n); return x; }
+    function addMonths(d, n){ const x = new Date(d); x.setMonth(x.getMonth() + n); return x; }
+    function addDays(d, n){ const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+
+    function computeAgeParts(birth, now){
+      let cursor = new Date(birth);
+
+      let years = 0;
+      while (addYears(cursor, 1) <= now) { cursor = addYears(cursor, 1); years++; }
+
+      let months = 0;
+      while (addMonths(cursor, 1) <= now) { cursor = addMonths(cursor, 1); months++; }
+
+      let days = 0;
+      while (addDays(cursor, 1) <= now) { cursor = addDays(cursor, 1); days++; }
+
+      const diffMs = now - cursor;
+      const totalSeconds = Math.floor(diffMs / 1000);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      return { years, months, days, hours, minutes, seconds };
     }
 
-    // reste du temps
-    const lastBirthday = new Date(
-      birth.getFullYear() + years,
-      birth.getMonth() + months,
-      birth.getDate(),
-      birth.getHours(),
-      birth.getMinutes()
-    );
+    function absurdStats(birth, now){
+      const livedSeconds = Math.floor((now - birth) / 1000);
+      const heartbeats = Math.floor(livedSeconds * (72 / 60)); // ~72 bpm
+      const breaths    = Math.floor(livedSeconds * (15 / 60)); // ~15/min
+      const blinks     = Math.floor(livedSeconds * (17 / 60)); // ~17/min
+      return { heartbeats, breaths, blinks };
+    }
 
-    const diff = now - lastBirthday;
+    // Init display of birth lines
+    for (const k of kids){
+      const bornEl = document.getElementById(`born-${k.key}`);
+      if (bornEl) bornEl.textContent = formatBirth(k.birth);
+    }
 
-    const seconds = Math.floor(diff / 1000) % 60;
-    const minutes = Math.floor(diff / 1000 / 60) % 60;
-    const hours = Math.floor(diff / 1000 / 60 / 60) % 24;
+    function tick(){
+      const now = new Date();
 
-    // stats débiles 😄
-    const totalSeconds = Math.floor((now - birth) / 1000);
-    const heartbeats = Math.floor(totalSeconds * 1.2); // ~72 bpm
-    const breaths = Math.floor(totalSeconds * 0.25);   // ~15/min
-    const blinks = Math.floor(totalSeconds * 0.28);    // ~17/min
+      for (const k of kids){
+        const ageEl = document.getElementById(`age-${k.key}`);
+        if (!ageEl) continue;
 
-    document.getElementById("age").innerHTML = `
-      <span>${years}</span> années,
-      <span>${months}</span> mois,
-      <span>${days}</span> jours<br>
-      <span>${hours}</span> heures,
-      <span>${minutes}</span> minutes,
-      <span>${seconds}</span> secondes
-      <hr style="opacity:.2">
-      ❤️ <span>${heartbeats.toLocaleString()}</span> battements de cœur<br>
-      🌬️ <span>${breaths.toLocaleString()}</span> respirations<br>
-      👀 <span>${blinks.toLocaleString()}</span> clignements d’yeux
-    `;
-  }
+        if (now < k.birth){
+          ageEl.textContent = "Pas encore né 😄";
+          continue;
+        }
 
-  updateAge();
-  setInterval(updateAge, 1000);
-</script>
+        const a = computeAgeParts(k.birth, now);
+        const s = absurdStats(k.birth, now);
+
+        ageEl.innerHTML = `
+          <div>
+            <span>${a.years}</span> années, <span>${a.months}</span> mois, <span>${a.days}</span> jours<br>
+            <span>${a.hours}</span> heures, <span>${a.minutes}</span> minutes, <span>${a.seconds}</span> secondes
+          </div>
+          <hr>
+          <div class="tiny">
+            ❤️ <span>${s.heartbeats.toLocaleString()}</span> battements de cœur<br>
+            🌬️ <span>${s.breaths.toLocaleString()}</span> respirations<br>
+            👀 <span>${s.blinks.toLocaleString()}</span> clignements d’yeux
+          </div>
+        `;
+      }
+    }
+
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>
