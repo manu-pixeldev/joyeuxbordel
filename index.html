@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Joyeux Bordel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .box {
+      text-align: center;
+      padding: 2.5rem;
+      border-radius: 20px;
+      background: #1b1b1b;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+      max-width: 520px;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: .3rem;
+    }
+    .tagline {
+      opacity: .6;
+      margin-bottom: 2rem;
+    }
+    .age {
+      font-size: 1.2rem;
+      line-height: 1.7;
+    }
+    .age span {
+      color: #ffcc00;
+      font-weight: 600;
+    }
+    .footer {
+      margin-top: 2rem;
+      opacity: .4;
+      font-size: .85rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h1>Ulysse</h1>
+  <div class="tagline">né le 12 mars 2018</div>
+
+  <div class="age" id="age"></div>
+
+<div class="footer">
+  Ulysse grandit pendant que tu regardes cette page.<br>
+  Oui, même maintenant.
+</div>
+
+</div>
+
+<script>
+  const birth = new Date("2018-02-19T16:40:00");
+
+  function tick() {
+    const now = new Date();
+    const diff = now - birth;
+
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours   = Math.floor(minutes / 60);
+    const days    = Math.floor(hours / 24);
+    const years   = (days / 365.2422).toFixed(9);
+
+    document.getElementById("age").innerHTML = `
+      <span>${years}</span> années<br>
+      <span>${days}</span> jours<br>
+      <span>${hours}</span> heures<br>
+      <span>${minutes}</span> minutes<br>
+      <span>${seconds}</span> secondes
+    `;
+  }
+
+  tick();
+  setInterval(tick, 1000);
+</script>
+
+</body>
+</html>
