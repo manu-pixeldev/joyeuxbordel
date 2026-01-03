@@ -25,7 +25,7 @@
         padding: 24px;
       }
       .wrap {
-        width: min(1100px, 100%);
+        width: min(1120px, 100%);
       }
 
       header {
@@ -37,7 +37,7 @@
       }
       h1 {
         margin: 0;
-        font-size: 2.2rem;
+        font-size: 2.25rem;
         letter-spacing: 0.2px;
       }
       .sub {
@@ -59,6 +59,7 @@
         font-size: 0.92rem;
         opacity: 0.92;
         user-select: none;
+        white-space: nowrap;
       }
       .pill b {
         color: var(--accent);
@@ -108,7 +109,7 @@
         margin-bottom: 6px;
       }
       .name {
-        font-size: 1.8rem;
+        font-size: 1.9rem;
         margin: 0;
       }
       .tag {
@@ -131,12 +132,11 @@
         font-size: 1.05rem;
         line-height: 1.6;
       }
-      .age span {
-        font-weight: 800;
+      .age .big span {
+        font-weight: 900;
         color: var(--accent);
         letter-spacing: 0.2px;
       }
-
       .pulse {
         animation: pulse 1s infinite;
       }
@@ -160,19 +160,16 @@
       }
 
       .tiny {
-        font-size: 0.95rem;
-        opacity: 0.9;
-        line-height: 1.55;
+        font-size: 0.98rem;
+        opacity: 0.92;
+        line-height: 1.6;
       }
-      .tiny span[title] {
-        border-bottom: 1px dotted rgba(255, 255, 255, 0.35);
-        cursor: help;
+      .tiny b {
+        font-weight: 900;
+        color: var(--accent);
       }
-
-      .hintline {
-        margin-top: 10px;
-        font-size: 0.9rem;
-        opacity: 0.55;
+      .tiny .label {
+        opacity: 0.8;
       }
 
       .footer {
@@ -212,7 +209,7 @@
         border: 1px solid rgba(255, 255, 255, 0.1);
       }
 
-      /* Eggs (visuels discrets) */
+      /* Eggs (effets discrets, clavier only) */
       .card.stars::before {
         content: "";
         position: absolute;
@@ -301,49 +298,55 @@
       <header>
         <div>
           <h1>Le joyeux bordel en temps réel</h1>
-          <p class="sub">Ils grandissent. Le chaos aussi.</p>
+          <p class="sub">
+            Dashboard vivant. Compteurs qui tournent. Secrets planqués.
+          </p>
         </div>
         <div class="pillbar">
-          <div class="pill">
-            🧠 Astuce : survole les chiffres <b>pour le détail</b>
-          </div>
-          <div class="pill">🥚 (il y a des secrets)</div>
+          <div class="pill">🧠 Survole = lisibilité</div>
+          <div class="pill">🔎 Détail = séparateurs FR</div>
+          <div class="pill">🥚 (si tu sais, tu sais)</div>
         </div>
       </header>
 
       <div class="grid">
-        <div class="card stars" id="card-ulysse" title="Ulysse">
+        <div
+          class="card stars"
+          id="card-ulysse"
+          title="Double-clic pour ouvrir"
+        >
           <div class="topline">
             <h2 class="name">Ulysse</h2>
             <div class="tag">grand frère</div>
           </div>
           <p class="born" id="born-ulysse"></p>
           <div class="age" id="age-ulysse"></div>
-          <div class="hintline">Clique pour ouvrir sa page (V2).</div>
         </div>
 
-        <div class="card moon" id="card-willow" title="Willow">
+        <div class="card moon" id="card-willow" title="Double-clic pour ouvrir">
           <div class="topline">
             <h2 class="name">Willow</h2>
             <div class="tag">mode ninja</div>
           </div>
           <p class="born" id="born-willow"></p>
           <div class="age" id="age-willow"></div>
-          <div class="hintline">Clique pour ouvrir sa page (V2).</div>
         </div>
 
-        <div class="card rocket" id="card-daryl" title="Daryl">
+        <div
+          class="card rocket"
+          id="card-daryl"
+          title="Double-clic pour ouvrir"
+        >
           <div class="topline">
             <h2 class="name">Daryl</h2>
             <div class="tag">mini fusée</div>
           </div>
           <p class="born" id="born-daryl"></p>
           <div class="age" id="age-daryl"></div>
-          <div class="hintline">Clique pour ouvrir sa page (V2).</div>
         </div>
       </div>
 
-      <div class="footer">joyeuxbordel.be — ça bouge, ça vit, ça grandit.</div>
+      <div class="footer">joyeuxbordel.be — V2 dashboard live ✅</div>
     </div>
 
     <div class="toast" id="toast"></div>
@@ -375,6 +378,10 @@
       function pad2(n) {
         return String(n).padStart(2, "0");
       }
+      function fr(n) {
+        return n.toLocaleString("fr-FR");
+      }
+
       function formatBirth(d) {
         const dd = pad2(d.getDate());
         const mm = pad2(d.getMonth() + 1);
@@ -430,35 +437,24 @@
         return { years, months, days, hours, minutes, seconds };
       }
 
-      // Human-friendly number formatting
-      function humanizeNumber(n) {
-        const abs = Math.abs(n);
-        const fmt = (val, suffix) => {
-          const decimals = val < 100 ? 1 : 0;
-          return `${val.toFixed(decimals).replace(".", ",")} ${suffix}`;
-        };
-        if (abs >= 1e12) return fmt(n / 1e12, "T");
-        if (abs >= 1e9) return fmt(n / 1e9, "Md");
-        if (abs >= 1e6) return fmt(n / 1e6, "M");
-        if (abs >= 1e3) return fmt(n / 1e3, "k");
-        return n.toLocaleString("fr-FR");
-      }
-      function exactNumber(n) {
-        return n.toLocaleString("fr-FR");
-      }
-
-      // Dashboard stats "qui parlent"
-      function dashboardStats(birth, now) {
+      // stats LIVE : on calcule des taux et on affiche le nombre qui change chaque seconde
+      function liveStats(birth, now) {
         const livedSeconds = Math.floor((now - birth) / 1000);
 
-        const heartbeats = Math.floor(livedSeconds * (72 / 60));
-        const breaths = Math.floor(livedSeconds * (15 / 60));
-        const blinks = Math.floor(livedSeconds * (17 / 60));
+        // Taux (approx)
+        const bpm = 72; // battements/min
+        const rpm = 15; // respirations/min
+        const blm = 17; // clignements/min
+
+        // live counts
+        const heartbeats = Math.floor(livedSeconds * (bpm / 60));
+        const breaths = Math.floor(livedSeconds * (rpm / 60));
+        const blinks = Math.floor(livedSeconds * (blm / 60));
 
         const livedDays = Math.floor(livedSeconds / 86400);
         const livedWeeks = Math.floor(livedDays / 7);
 
-        // anniversaires déjà fêtés
+        // anniversaires passés
         let birthdays = now.getFullYear() - birth.getFullYear();
         const thisYearBirthday = new Date(
           now.getFullYear(),
@@ -484,24 +480,19 @@
         toastEl.innerHTML = msg;
         toastEl.classList.add("show");
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2000);
+        toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1900);
       }
 
-      // init births + click to child page
+      // init births + click behaviors
       for (const k of kids) {
         const bornEl = document.getElementById(`born-${k.key}`);
         if (bornEl) bornEl.textContent = formatBirth(k.birth);
 
         const card = document.getElementById(`card-${k.key}`);
-        if (card)
-          card.addEventListener("dblclick", () => (location.href = k.path)); // double clic = page (V2)
-        if (card)
-          card.addEventListener("click", () => {
-            // clic simple : toggle egg (secret), sans quitter la page
-            if (k.key === "ulysse") toggleEgg("ulysse");
-            if (k.key === "willow") toggleEgg("willow");
-            if (k.key === "daryl") toggleEgg("daryl");
-          });
+        if (card) {
+          // clic simple = ouvre la page enfant (V2)
+          card.addEventListener("click", () => (location.href = k.path));
+        }
       }
 
       function tick() {
@@ -517,10 +508,10 @@
           }
 
           const a = computeAgeParts(k.birth, now);
-          const s = dashboardStats(k.birth, now);
+          const s = liveStats(k.birth, now);
 
           ageEl.innerHTML = `
-          <div>
+          <div class="big">
             <span>${a.years}</span> ans, <span>${a.months}</span> mois, <span>${
             a.days
           }</span> jours<br>
@@ -530,23 +521,22 @@
           </div>
           <hr>
           <div class="tiny">
-            ❤️ <span title="${exactNumber(s.heartbeats)}">${humanizeNumber(
+            <span class="label">❤️ cœur :</span>
+            <b title="${fr(s.heartbeats)}">${fr(
             s.heartbeats
-          )}</span> battements<br>
-            🌬️ <span title="${exactNumber(s.breaths)}">${humanizeNumber(
-            s.breaths
-          )}</span> respirations<br>
-            👀 <span title="${exactNumber(s.blinks)}">${humanizeNumber(
-            s.blinks
-          )}</span> clignements
+          )}</b> battements<br>
+
+            <span class="label">🌬️ souffle :</span>
+            <b title="${fr(s.breaths)}">${fr(s.breaths)}</b> respirations<br>
+
+            <span class="label">👀 yeux :</span>
+            <b title="${fr(s.blinks)}">${fr(s.blinks)}</b> clignements
             <hr style="opacity:.15">
-            📅 <span title="${exactNumber(s.livedDays)}">${humanizeNumber(
-            s.livedDays
-          )}</span> jours vécus<br>
-            🗓️ <span title="${exactNumber(s.livedWeeks)}">${humanizeNumber(
-            s.livedWeeks
-          )}</span> semaines<br>
-            🎂 <span>${s.birthdays}</span> anniversaires
+            <span class="label">📅 jours :</span> <b>${fr(s.livedDays)}</b> — 
+            <span class="label">🗓️ semaines :</span> <b>${fr(
+              s.livedWeeks
+            )}</b> — 
+            <span class="label">🎂 anniversaires :</span> <b>${s.birthdays}</b>
           </div>
         `;
         }
@@ -555,7 +545,7 @@
       tick();
       setInterval(tick, 1000);
 
-      // --- Easter eggs cachés (codes non affichés)
+      // --- Easter eggs clavier ONLY (cachés)
       const elU = document.getElementById("card-ulysse");
       const elW = document.getElementById("card-willow");
       const elD = document.getElementById("card-daryl");
@@ -596,9 +586,8 @@
         }
       });
 
-      // Codes (pour toi, pas affichés) :
+      // Codes (pour toi, cachés):
       // U = Ulysse, W = Willow, D = Daryl, C = Chaos.
-      // Double-clic sur une carte = ouvre la page /ulysse/ /willow/ /daryl/ (V2).
     </script>
   </body>
 </html>
