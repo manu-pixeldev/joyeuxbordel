@@ -1,17 +1,593 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <meta charset="utf-8" />
-  <title>Willow</title>
-  <body
-    style="
-      font-family: system-ui;
-      background: #0f0f0f;
-      color: #fff;
-      padding: 24px;
-    "
-  >
-    <h1>Willow 🥷</h1>
-    <p>Page en construction 😄</p>
-    <p><a href="/" style="color: #ffcc00">← retour</a></p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Joyeux Bordel</title>
+    <style>
+      :root {
+        --bg: #0f0f0f;
+        --card: #1b1b1b;
+        --text: #ffffff;
+        --muted: rgba(255, 255, 255, 0.65);
+        --soft: rgba(255, 255, 255, 0.1);
+        --accent: #ffcc00;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      .wrap {
+        width: min(1120px, 100%);
+      }
+
+      header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 2.25rem;
+        letter-spacing: 0.2px;
+      }
+      .sub {
+        margin: 6px 0 0 0;
+        opacity: 0.65;
+      }
+
+      .pillbar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .pill {
+        padding: 8px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 0.92rem;
+        opacity: 0.92;
+        user-select: none;
+        white-space: nowrap;
+      }
+      .pill b {
+        color: var(--accent);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+      @media (max-width: 900px) {
+        header {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+        .pillbar {
+          justify-content: flex-start;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .card {
+        position: relative;
+        background: var(--card);
+        border-radius: 18px;
+        padding: 18px 18px 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+        transition: transform 0.15s ease, border-color 0.15s ease,
+          box-shadow 0.15s ease;
+        cursor: pointer;
+        user-select: none;
+      }
+      .card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.12);
+      }
+
+      .topline {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 6px;
+      }
+      .name {
+        font-size: 1.9rem;
+        margin: 0;
+      }
+      .tag {
+        font-size: 0.9rem;
+        opacity: 0.65;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
+        padding: 6px 10px;
+        border-radius: 999px;
+        white-space: nowrap;
+      }
+
+      .born {
+        margin: 0 0 12px 0;
+        opacity: 0.7;
+        font-size: 0.98rem;
+      }
+
+      .age {
+        font-size: 1.05rem;
+        line-height: 1.6;
+      }
+      .age .big span {
+        font-weight: 900;
+        color: var(--accent);
+        letter-spacing: 0.2px;
+      }
+      .pulse {
+        animation: pulse 1s infinite;
+      }
+      @keyframes pulse {
+        0% {
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.6;
+        }
+      }
+
+      hr {
+        border: 0;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.12);
+        margin: 12px 0;
+      }
+
+      .tiny {
+        font-size: 0.98rem;
+        opacity: 0.92;
+        line-height: 1.6;
+      }
+      .tiny b {
+        font-weight: 900;
+        color: var(--accent);
+      }
+      .tiny .label {
+        opacity: 0.8;
+      }
+
+      .footer {
+        margin-top: 18px;
+        text-align: center;
+        opacity: 0.5;
+        font-size: 0.9rem;
+      }
+
+      /* Toast */
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 18px;
+        transform: translateX(-50%);
+        background: rgba(20, 20, 20, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 14px;
+        padding: 10px 14px;
+        font-size: 0.95rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.18s ease, transform 0.18s ease;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+        max-width: min(900px, 92vw);
+        text-align: center;
+        z-index: 999;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-4px);
+      }
+      .toast code {
+        background: rgba(0, 0, 0, 0.35);
+        padding: 2px 6px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* Eggs (effets discrets, clavier only) */
+      .card.stars::before {
+        content: "";
+        position: absolute;
+        inset: -40px;
+        background: radial-gradient(
+              circle,
+              rgba(255, 255, 255, 0.9) 0 1px,
+              transparent 2px
+            )
+            0 0/120px 120px,
+          radial-gradient(
+              circle,
+              rgba(255, 255, 255, 0.65) 0 1px,
+              transparent 2px
+            )
+            40px 60px/160px 160px,
+          radial-gradient(circle, rgba(255, 204, 0, 0.8) 0 1px, transparent 2px)
+            10px 30px/200px 200px;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+        filter: drop-shadow(0 0 6px rgba(255, 204, 0, 0.12));
+      }
+      .card.stars.on::before {
+        opacity: 0.22;
+      }
+
+      .card.moon::before {
+        content: "";
+        position: absolute;
+        width: 240px;
+        height: 240px;
+        border-radius: 50%;
+        right: -110px;
+        top: -110px;
+        background: radial-gradient(
+          circle at 35% 35%,
+          rgba(255, 255, 255, 0.22),
+          rgba(255, 255, 255, 0.05) 55%,
+          transparent 70%
+        );
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+      }
+      .card.moon.on::before {
+        opacity: 1;
+      }
+
+      .card.rocket.on {
+        border-color: rgba(255, 204, 0, 0.22);
+        box-shadow: 0 30px 120px rgba(255, 204, 0, 0.1),
+          0 20px 60px rgba(0, 0, 0, 0.55);
+        animation: wiggle 0.35s ease-in-out 0s 2;
+      }
+      @keyframes wiggle {
+        0% {
+          transform: translateY(0) rotate(0deg);
+        }
+        25% {
+          transform: translateY(-2px) rotate(-0.6deg);
+        }
+        50% {
+          transform: translateY(0) rotate(0.6deg);
+        }
+        75% {
+          transform: translateY(-2px) rotate(-0.4deg);
+        }
+        100% {
+          transform: translateY(0) rotate(0deg);
+        }
+      }
+
+      body.chaos {
+        background: radial-gradient(circle at 20% 10%, #2a0033, #0f0f0f 60%);
+      }
+      body.chaos .card {
+        border-color: rgba(255, 204, 0, 0.16);
+        box-shadow: 0 30px 140px rgba(255, 204, 0, 0.08),
+          0 20px 60px rgba(0, 0, 0, 0.55);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div>
+          <h1>Le joyeux bordel en temps réel</h1>
+          <p class="sub">
+            Dashboard vivant. Compteurs qui tournent. Secrets planqués.
+          </p>
+        </div>
+        <div class="pillbar">
+          <div class="pill">🧠 Survole = lisibilité</div>
+          <div class="pill">🔎 Détail = séparateurs FR</div>
+          <div class="pill">🥚 (si tu sais, tu sais)</div>
+        </div>
+      </header>
+
+      <div class="grid">
+        <div
+          class="card stars"
+          id="card-ulysse"
+          title="Double-clic pour ouvrir"
+        >
+          <div class="topline">
+            <h2 class="name">Ulysse</h2>
+            <div class="tag">grand frère</div>
+          </div>
+          <p class="born" id="born-ulysse"></p>
+          <div class="age" id="age-ulysse"></div>
+        </div>
+
+        <div class="card moon" id="card-willow" title="Double-clic pour ouvrir">
+          <div class="topline">
+            <h2 class="name">Willow</h2>
+            <div class="tag">mode ninja</div>
+          </div>
+          <p class="born" id="born-willow"></p>
+          <div class="age" id="age-willow"></div>
+        </div>
+
+        <div
+          class="card rocket"
+          id="card-daryl"
+          title="Double-clic pour ouvrir"
+        >
+          <div class="topline">
+            <h2 class="name">Daryl</h2>
+            <div class="tag">mini fusée</div>
+          </div>
+          <p class="born" id="born-daryl"></p>
+          <div class="age" id="age-daryl"></div>
+        </div>
+      </div>
+
+      <div class="footer">joyeuxbordel.be — V2 dashboard live ✅</div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      // --- Dates (mois: 0=janvier)
+      const kids = [
+        {
+          key: "ulysse",
+          name: "Ulysse",
+          birth: new Date(2018, 1, 19, 16, 40, 0),
+          path: "/ulysse/",
+        },
+        {
+          key: "willow",
+          name: "Willow",
+          birth: new Date(2019, 3, 20, 1, 30, 0),
+          path: "/willow/",
+        },
+        {
+          key: "daryl",
+          name: "Daryl",
+          birth: new Date(2023, 2, 31, 14, 0, 0),
+          path: "/daryl/",
+        },
+      ];
+
+      // --- helpers
+      function pad2(n) {
+        return String(n).padStart(2, "0");
+      }
+      function fr(n) {
+        return n.toLocaleString("fr-FR");
+      }
+
+      function formatBirth(d) {
+        const dd = pad2(d.getDate());
+        const mm = pad2(d.getMonth() + 1);
+        const yyyy = d.getFullYear();
+        const hh = pad2(d.getHours());
+        const mi = pad2(d.getMinutes());
+        return `Né le ${dd}/${mm}/${yyyy} à ${hh}h${mi}`;
+      }
+
+      function addYears(d, n) {
+        const x = new Date(d);
+        x.setFullYear(x.getFullYear() + n);
+        return x;
+      }
+      function addMonths(d, n) {
+        const x = new Date(d);
+        x.setMonth(x.getMonth() + n);
+        return x;
+      }
+      function addDays(d, n) {
+        const x = new Date(d);
+        x.setDate(x.getDate() + n);
+        return x;
+      }
+
+      function computeAgeParts(birth, now) {
+        let cursor = new Date(birth);
+
+        let years = 0;
+        while (addYears(cursor, 1) <= now) {
+          cursor = addYears(cursor, 1);
+          years++;
+        }
+
+        let months = 0;
+        while (addMonths(cursor, 1) <= now) {
+          cursor = addMonths(cursor, 1);
+          months++;
+        }
+
+        let days = 0;
+        while (addDays(cursor, 1) <= now) {
+          cursor = addDays(cursor, 1);
+          days++;
+        }
+
+        const diffMs = now - cursor;
+        const totalSeconds = Math.floor(diffMs / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        return { years, months, days, hours, minutes, seconds };
+      }
+
+      // stats LIVE : on calcule des taux et on affiche le nombre qui change chaque seconde
+      function liveStats(birth, now) {
+        const livedSeconds = Math.floor((now - birth) / 1000);
+
+        // Taux (approx)
+        const bpm = 72; // battements/min
+        const rpm = 15; // respirations/min
+        const blm = 17; // clignements/min
+
+        // live counts
+        const heartbeats = Math.floor(livedSeconds * (bpm / 60));
+        const breaths = Math.floor(livedSeconds * (rpm / 60));
+        const blinks = Math.floor(livedSeconds * (blm / 60));
+
+        const livedDays = Math.floor(livedSeconds / 86400);
+        const livedWeeks = Math.floor(livedDays / 7);
+
+        // anniversaires passés
+        let birthdays = now.getFullYear() - birth.getFullYear();
+        const thisYearBirthday = new Date(
+          now.getFullYear(),
+          birth.getMonth(),
+          birth.getDate()
+        );
+        if (now < thisYearBirthday) birthdays--;
+
+        return {
+          heartbeats,
+          breaths,
+          blinks,
+          livedDays,
+          livedWeeks,
+          birthdays,
+        };
+      }
+
+      // Toast
+      const toastEl = document.getElementById("toast");
+      let toastTimer = null;
+      function toast(msg) {
+        toastEl.innerHTML = msg;
+        toastEl.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1900);
+      }
+
+      // init births + click behaviors
+      for (const k of kids) {
+        const bornEl = document.getElementById(`born-${k.key}`);
+        if (bornEl) bornEl.textContent = formatBirth(k.birth);
+
+        const card = document.getElementById(`card-${k.key}`);
+        if (card) {
+          // clic simple = ouvre la page enfant (V2)
+          card.addEventListener("click", () => (location.href = k.path));
+        }
+      }
+
+      function tick() {
+        const now = new Date();
+
+        for (const k of kids) {
+          const ageEl = document.getElementById(`age-${k.key}`);
+          if (!ageEl) continue;
+
+          if (now < k.birth) {
+            ageEl.textContent = "Pas encore né 😄";
+            continue;
+          }
+
+          const a = computeAgeParts(k.birth, now);
+          const s = liveStats(k.birth, now);
+
+          ageEl.innerHTML = `
+          <div class="big">
+            <span>${a.years}</span> ans, <span>${a.months}</span> mois, <span>${
+            a.days
+          }</span> jours<br>
+            <span>${a.hours}</span> h, <span>${
+            a.minutes
+          }</span> min, <span class="pulse">${a.seconds}</span> s
+          </div>
+          <hr>
+          <div class="tiny">
+            <span class="label">❤️ cœur :</span>
+            <b title="${fr(s.heartbeats)}">${fr(
+            s.heartbeats
+          )}</b> battements<br>
+
+            <span class="label">🌬️ souffle :</span>
+            <b title="${fr(s.breaths)}">${fr(s.breaths)}</b> respirations<br>
+
+            <span class="label">👀 yeux :</span>
+            <b title="${fr(s.blinks)}">${fr(s.blinks)}</b> clignements
+            <hr style="opacity:.15">
+            <span class="label">📅 jours :</span> <b>${fr(s.livedDays)}</b> — 
+            <span class="label">🗓️ semaines :</span> <b>${fr(
+              s.livedWeeks
+            )}</b> — 
+            <span class="label">🎂 anniversaires :</span> <b>${s.birthdays}</b>
+          </div>
+        `;
+        }
+      }
+
+      tick();
+      setInterval(tick, 1000);
+
+      // --- Easter eggs clavier ONLY (cachés)
+      const elU = document.getElementById("card-ulysse");
+      const elW = document.getElementById("card-willow");
+      const elD = document.getElementById("card-daryl");
+
+      function toggleEgg(which) {
+        if (which === "ulysse") {
+          elU.classList.toggle("on");
+          toast(
+            `✨ Secret Ulysse ${elU.classList.contains("on") ? "ON" : "OFF"}`
+          );
+        }
+        if (which === "willow") {
+          elW.classList.toggle("on");
+          toast(
+            `🌙 Secret Willow ${elW.classList.contains("on") ? "ON" : "OFF"}`
+          );
+        }
+        if (which === "daryl") {
+          elD.classList.toggle("on");
+          toast(
+            `🚀 Secret Daryl ${elD.classList.contains("on") ? "ON" : "OFF"}`
+          );
+        }
+      }
+
+      window.addEventListener("keydown", (e) => {
+        const k = (e.key || "").toLowerCase();
+        if (k === "u") toggleEgg("ulysse");
+        if (k === "w") toggleEgg("willow");
+        if (k === "d") toggleEgg("daryl");
+        if (k === "c") {
+          document.body.classList.toggle("chaos");
+          toast(
+            `😈 Chaos ${
+              document.body.classList.contains("chaos") ? "ON" : "OFF"
+            }`
+          );
+        }
+      });
+
+      // Codes (pour toi, cachés):
+      // U = Ulysse, W = Willow, D = Daryl, C = Chaos.
+    </script>
   </body>
 </html>
