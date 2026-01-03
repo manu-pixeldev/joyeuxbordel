@@ -1,17 +1,687 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <meta charset="utf-8" />
-  <title>Daryl</title>
-  <body
-    style="
-      font-family: system-ui;
-      background: #0f0f0f;
-      color: #fff;
-      padding: 24px;
-    "
-  >
-    <h1>Daryl 🚀</h1>
-    <p>Page en construction 😄</p>
-    <p><a href="/" style="color: #ffcc00">← retour</a></p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daryl — Joyeux Bordel</title>
+    <style>
+      :root {
+        --bg: #0b0b0b;
+        --card: rgba(255, 255, 255, 0.06);
+        --border: rgba(255, 255, 255, 0.1);
+        --text: #ffffff;
+        --muted: rgba(255, 255, 255, 0.72);
+        --accent: #ffcc00;
+        --red: #fb7185;
+        --blue: #60a5fa;
+        --green: #34d399;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        color: var(--text);
+        background: radial-gradient(
+            900px 650px at 20% 10%,
+            rgba(255, 204, 0, 0.14),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 650px at 80% 20%,
+            rgba(96, 165, 250, 0.12),
+            transparent 60%
+          ),
+          radial-gradient(
+            1200px 900px at 50% 95%,
+            rgba(251, 113, 133, 0.1),
+            transparent 60%
+          ),
+          var(--bg);
+        min-height: 100vh;
+        padding: 24px;
+        display: flex;
+        justify-content: center;
+        overflow-x: hidden;
+      }
+      .wrap {
+        width: min(1100px, 100%);
+      }
+
+      header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 2.6rem;
+        letter-spacing: 0.2px;
+      }
+      .sub {
+        margin: 8px 0 0 0;
+        opacity: 0.75;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(0, 0, 0, 0.25);
+        color: var(--text);
+        text-decoration: none;
+        opacity: 0.9;
+        user-select: none;
+      }
+      .btn:hover {
+        opacity: 1;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 16px;
+        align-items: start;
+      }
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 20px 70px rgba(0, 0, 0, 0.45);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .meta {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      .pill {
+        padding: 8px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(0, 0, 0, 0.18);
+        opacity: 0.92;
+        font-size: 0.95rem;
+        white-space: nowrap;
+      }
+      .pill b {
+        color: var(--accent);
+      }
+
+      .big {
+        font-size: 1.25rem;
+        line-height: 1.55;
+        margin-top: 8px;
+      }
+      .big span {
+        font-weight: 900;
+        color: var(--accent);
+        letter-spacing: 0.2px;
+      }
+      .pulse {
+        animation: pulse 1s infinite;
+      }
+      @keyframes pulse {
+        0% {
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.6;
+        }
+      }
+
+      hr {
+        border: 0;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.12);
+        margin: 14px 0;
+      }
+
+      .stats {
+        font-size: 1.05rem;
+        line-height: 1.65;
+        opacity: 0.95;
+      }
+      .stats .label {
+        opacity: 0.75;
+      }
+      .stats b {
+        color: var(--blue);
+        font-weight: 900;
+      }
+      .stats b[title] {
+        border-bottom: 1px dotted rgba(255, 255, 255, 0.35);
+        cursor: help;
+      }
+
+      .sectionTitle {
+        font-size: 1.05rem;
+        letter-spacing: 0.2px;
+        opacity: 0.85;
+        margin: 0 0 10px 0;
+      }
+
+      .launchBox {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .launchRow {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.18);
+      }
+      .launchRow .left {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.22);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+      }
+      .dot.on {
+        background: rgba(52, 211, 153, 0.9);
+        border-color: rgba(52, 211, 153, 0.6);
+        box-shadow: 0 0 18px rgba(52, 211, 153, 0.25);
+      }
+      .launchRow h3 {
+        margin: 0;
+        font-size: 1.02rem;
+      }
+      .launchRow p {
+        margin: 2px 0 0 0;
+        opacity: 0.78;
+      }
+
+      .action {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .cta {
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 204, 0, 0.22);
+        background: rgba(255, 204, 0, 0.12);
+        color: var(--text);
+        cursor: pointer;
+        font-weight: 900;
+        user-select: none;
+      }
+      .cta:hover {
+        background: rgba(255, 204, 0, 0.16);
+      }
+
+      .ghost {
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.18);
+        color: var(--text);
+        cursor: pointer;
+        opacity: 0.9;
+        user-select: none;
+      }
+      .ghost:hover {
+        opacity: 1;
+      }
+
+      /* Toast */
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 18px;
+        transform: translateX(-50%);
+        background: rgba(15, 15, 20, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 14px;
+        padding: 10px 14px;
+        font-size: 1rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.18s ease, transform 0.18s ease;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+        max-width: min(900px, 92vw);
+        text-align: center;
+        z-index: 999;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-4px);
+      }
+      .toast code {
+        background: rgba(0, 0, 0, 0.35);
+        padding: 2px 6px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* Rocket visuals */
+      .rocketGlow::before {
+        content: "";
+        position: absolute;
+        inset: -60px;
+        background: radial-gradient(
+            circle at 20% 10%,
+            rgba(255, 204, 0, 0.18),
+            transparent 55%
+          ),
+          radial-gradient(
+            circle at 80% 25%,
+            rgba(96, 165, 250, 0.16),
+            transparent 55%
+          ),
+          radial-gradient(
+            circle at 40% 90%,
+            rgba(251, 113, 133, 0.12),
+            transparent 55%
+          );
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+      }
+      .rocketGlow.on::before {
+        opacity: 1;
+      }
+
+      /* TURBO mode (egg D) */
+      body.turbo .card {
+        border-color: rgba(255, 204, 0, 0.2);
+        box-shadow: 0 30px 130px rgba(255, 204, 0, 0.09),
+          0 20px 70px rgba(0, 0, 0, 0.45);
+      }
+      body.turbo .rocketGlow::before {
+        opacity: 1;
+      }
+      body.turbo .wrap {
+        animation: rumble 0.35s ease-in-out 0s 2;
+      }
+      @keyframes rumble {
+        0% {
+          transform: translateX(0);
+        }
+        20% {
+          transform: translateX(-2px);
+        }
+        40% {
+          transform: translateX(2px);
+        }
+        60% {
+          transform: translateX(-1px);
+        }
+        80% {
+          transform: translateX(1px);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      .footer {
+        margin-top: 16px;
+        text-align: center;
+        opacity: 0.55;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div>
+          <h1>Daryl</h1>
+          <p class="sub">
+            Mini fusée officielle — compteurs live + mode turbo caché.
+          </p>
+        </div>
+        <a class="btn" href="/">← retour au dashboard</a>
+      </header>
+
+      <div class="grid">
+        <!-- Left: live panel -->
+        <div class="card rocketGlow" id="panel">
+          <div class="meta">
+            <div class="pill">📍 Né le <b id="bornDate"></b></div>
+            <div class="pill">⏱️ À <b id="bornTime"></b></div>
+            <div class="pill">🛰️ Statut : <b id="statusNow">idle</b></div>
+          </div>
+
+          <div class="big" id="age"></div>
+
+          <hr />
+
+          <div class="stats" id="stats"></div>
+        </div>
+
+        <!-- Right: launch panel -->
+        <div class="card">
+          <p class="sectionTitle">Panneau de lancement</p>
+
+          <div class="launchBox">
+            <div class="launchRow">
+              <div class="left">
+                <div class="dot" id="dot1"></div>
+                <div>
+                  <h3>Carburant</h3>
+                  <p id="fuel">ok</p>
+                </div>
+              </div>
+              <div class="action">
+                <button class="ghost" onclick="toggleFuel()">toggle</button>
+              </div>
+            </div>
+
+            <div class="launchRow">
+              <div class="left">
+                <div class="dot" id="dot2"></div>
+                <div>
+                  <h3>Systèmes</h3>
+                  <p id="systems">ok</p>
+                </div>
+              </div>
+              <div class="action">
+                <button class="ghost" onclick="toggleSystems()">toggle</button>
+              </div>
+            </div>
+
+            <div class="launchRow">
+              <div class="left">
+                <div class="dot" id="dot3"></div>
+                <div>
+                  <h3>Autorisation parentale</h3>
+                  <p id="auth">ok (plus ou moins)</p>
+                </div>
+              </div>
+              <div class="action">
+                <button class="ghost" onclick="toggleAuth()">toggle</button>
+              </div>
+            </div>
+
+            <div class="launchRow">
+              <div class="left">
+                <div class="dot" id="dot4"></div>
+                <div>
+                  <h3>Compte à rebours</h3>
+                  <p id="countdown">prêt</p>
+                </div>
+              </div>
+              <div class="action">
+                <button class="cta" onclick="launch()">
+                  Lancer la fusée 🚀
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p style="margin-top: 12px; opacity: 0.65">
+            🥚 Egg caché : touche <code>D</code> (turbo)
+          </p>
+        </div>
+      </div>
+
+      <div class="footer">🥚 Code secret (caché) : D</div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      // Daryl birth: 31/03/2023 ~ 14:00
+      const BIRTH = new Date(2023, 2, 31, 14, 0, 0);
+
+      function pad2(n) {
+        return String(n).padStart(2, "0");
+      }
+      function fr(n) {
+        return n.toLocaleString("fr-FR");
+      }
+
+      function formatBorn(d) {
+        return `${pad2(d.getDate())}/${pad2(
+          d.getMonth() + 1
+        )}/${d.getFullYear()}`;
+      }
+      function formatTime(d) {
+        return `${pad2(d.getHours())}h${pad2(d.getMinutes())}`;
+      }
+
+      function addYears(d, n) {
+        const x = new Date(d);
+        x.setFullYear(x.getFullYear() + n);
+        return x;
+      }
+      function addMonths(d, n) {
+        const x = new Date(d);
+        x.setMonth(x.getMonth() + n);
+        return x;
+      }
+      function addDays(d, n) {
+        const x = new Date(d);
+        x.setDate(x.getDate() + n);
+        return x;
+      }
+
+      function computeAgeParts(birth, now) {
+        let cursor = new Date(birth);
+
+        let years = 0;
+        while (addYears(cursor, 1) <= now) {
+          cursor = addYears(cursor, 1);
+          years++;
+        }
+
+        let months = 0;
+        while (addMonths(cursor, 1) <= now) {
+          cursor = addMonths(cursor, 1);
+          months++;
+        }
+
+        let days = 0;
+        while (addDays(cursor, 1) <= now) {
+          cursor = addDays(cursor, 1);
+          days++;
+        }
+
+        const diffMs = now - cursor;
+        const totalSeconds = Math.floor(diffMs / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        return { years, months, days, hours, minutes, seconds };
+      }
+
+      function liveStats(birth, now) {
+        const livedSeconds = Math.floor((now - birth) / 1000);
+
+        const bpm = 72;
+        const rpm = 15;
+        const blm = 17;
+
+        const heartbeats = Math.floor(livedSeconds * (bpm / 60));
+        const breaths = Math.floor(livedSeconds * (rpm / 60));
+        const blinks = Math.floor(livedSeconds * (blm / 60));
+
+        const livedDays = Math.floor(livedSeconds / 86400);
+        const livedWeeks = Math.floor(livedDays / 7);
+
+        let birthdays = now.getFullYear() - birth.getFullYear();
+        const thisYearBirthday = new Date(
+          now.getFullYear(),
+          birth.getMonth(),
+          birth.getDate()
+        );
+        if (now < thisYearBirthday) birthdays--;
+
+        return {
+          heartbeats,
+          breaths,
+          blinks,
+          livedDays,
+          livedWeeks,
+          birthdays,
+        };
+      }
+
+      // Toast
+      const toastEl = document.getElementById("toast");
+      let toastTimer = null;
+      function toast(msg) {
+        toastEl.innerHTML = msg;
+        toastEl.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1800);
+      }
+
+      // Init born
+      document.getElementById("bornDate").textContent = formatBorn(BIRTH);
+      document.getElementById("bornTime").textContent = formatTime(BIRTH);
+
+      // Launch panel state
+      let fuelOk = true,
+        systemsOk = true,
+        authOk = true;
+      let launching = false;
+
+      function syncDots() {
+        document.getElementById("dot1").classList.toggle("on", fuelOk);
+        document.getElementById("dot2").classList.toggle("on", systemsOk);
+        document.getElementById("dot3").classList.toggle("on", authOk);
+        document
+          .getElementById("dot4")
+          .classList.toggle("on", !launching && fuelOk && systemsOk && authOk);
+
+        document.getElementById("fuel").textContent = fuelOk
+          ? "ok"
+          : "vide (snacks requis)";
+        document.getElementById("systems").textContent = systemsOk
+          ? "ok"
+          : "caprices détectés";
+        document.getElementById("auth").textContent = authOk
+          ? "ok (plus ou moins)"
+          : "refusé (négociation en cours)";
+      }
+
+      function toggleFuel() {
+        fuelOk = !fuelOk;
+        syncDots();
+      }
+      function toggleSystems() {
+        systemsOk = !systemsOk;
+        syncDots();
+      }
+      function toggleAuth() {
+        authOk = !authOk;
+        syncDots();
+      }
+
+      async function launch() {
+        if (launching) return;
+
+        if (!fuelOk || !systemsOk || !authOk) {
+          toast("🚫 Lancement impossible : check les voyants !");
+          return;
+        }
+
+        launching = true;
+        syncDots();
+        document.getElementById("statusNow").textContent = "ARMED";
+
+        const cdEl = document.getElementById("countdown");
+        for (let i = 3; i >= 1; i--) {
+          cdEl.textContent = `${i}...`;
+          toast(`🚀 ${i}...`);
+          await new Promise((r) => setTimeout(r, 750));
+        }
+        cdEl.textContent = "🔥 GO !";
+        toast("🔥 GO !");
+        document.getElementById("statusNow").textContent = "BOOST";
+
+        // quick visual blast
+        document.body.classList.add("turbo");
+        setTimeout(() => document.body.classList.remove("turbo"), 900);
+
+        setTimeout(() => {
+          launching = false;
+          document.getElementById("statusNow").textContent = "idle";
+          cdEl.textContent = "prêt";
+          syncDots();
+        }, 900);
+      }
+
+      syncDots();
+
+      // Egg D: turbo mode toggle (keyboard)
+      window.addEventListener("keydown", (e) => {
+        const k = (e.key || "").toLowerCase();
+        if (k === "d") {
+          document.body.classList.toggle("turbo");
+          toast(
+            `🚀 TURBO ${
+              document.body.classList.contains("turbo") ? "ON" : "OFF"
+            } <code>(D)</code>`
+          );
+        }
+      });
+
+      function tick() {
+        const now = new Date();
+        const a = computeAgeParts(BIRTH, now);
+        const s = liveStats(BIRTH, now);
+
+        document.getElementById("age").innerHTML = `
+        <span>${a.years}</span> ans, <span>${a.months}</span> mois, <span>${a.days}</span> jours<br>
+        <span>${a.hours}</span> h, <span>${a.minutes}</span> min, <span class="pulse">${a.seconds}</span> s
+      `;
+
+        document.getElementById("stats").innerHTML = `
+        <span class="label">❤️ cœur :</span> <b title="${fr(
+          s.heartbeats
+        )}">${fr(s.heartbeats)}</b> battements<br>
+        <span class="label">🌬️ souffle :</span> <b title="${fr(
+          s.breaths
+        )}">${fr(s.breaths)}</b> respirations<br>
+        <span class="label">👀 yeux :</span> <b title="${fr(s.blinks)}">${fr(
+          s.blinks
+        )}</b> clignements
+        <hr style="opacity:.15">
+        <span class="label">📅 jours vécus :</span> <b>${fr(
+          s.livedDays
+        )}</b><br>
+        <span class="label">🗓️ semaines :</span> <b>${fr(s.livedWeeks)}</b><br>
+        <span class="label">🎂 anniversaires :</span> <b>${s.birthdays}</b>
+      `;
+      }
+
+      tick();
+      setInterval(tick, 1000);
+
+      // Code secret (caché) : D
+    </script>
   </body>
 </html>
