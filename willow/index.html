@@ -1,17 +1,590 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <meta charset="utf-8" />
-  <title>Willow</title>
-  <body
-    style="
-      font-family: system-ui;
-      background: #0f0f0f;
-      color: #fff;
-      padding: 24px;
-    "
-  >
-    <h1>Willow 🥷</h1>
-    <p>Page en construction 😄</p>
-    <p><a href="/" style="color: #ffcc00">← retour</a></p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Willow — Joyeux Bordel</title>
+    <style>
+      :root {
+        --bg: #070a12;
+        --card: rgba(255, 255, 255, 0.06);
+        --border: rgba(255, 255, 255, 0.1);
+        --text: #ffffff;
+        --muted: rgba(255, 255, 255, 0.7);
+        --accent: #a78bfa; /* violet doux */
+        --accent2: #60a5fa; /* bleu */
+        --lime: #34d399; /* ninja green */
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        color: var(--text);
+        background: radial-gradient(
+            900px 650px at 20% 15%,
+            rgba(96, 165, 250, 0.12),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 650px at 80% 20%,
+            rgba(167, 139, 250, 0.12),
+            transparent 60%
+          ),
+          radial-gradient(
+            1100px 900px at 50% 95%,
+            rgba(52, 211, 153, 0.08),
+            transparent 60%
+          ),
+          var(--bg);
+        min-height: 100vh;
+        padding: 24px;
+        display: flex;
+        justify-content: center;
+        overflow-x: hidden;
+      }
+      .wrap {
+        width: min(1100px, 100%);
+      }
+
+      header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 2.6rem;
+        letter-spacing: 0.2px;
+      }
+      .sub {
+        margin: 8px 0 0 0;
+        opacity: 0.75;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(0, 0, 0, 0.25);
+        color: var(--text);
+        text-decoration: none;
+        opacity: 0.9;
+        user-select: none;
+      }
+      .btn:hover {
+        opacity: 1;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 16px;
+        align-items: start;
+      }
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 20px 70px rgba(0, 0, 0, 0.45);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .meta {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      .pill {
+        padding: 8px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(0, 0, 0, 0.18);
+        opacity: 0.92;
+        font-size: 0.95rem;
+        white-space: nowrap;
+      }
+      .pill b {
+        color: var(--accent);
+      }
+
+      .big {
+        font-size: 1.25rem;
+        line-height: 1.55;
+        margin-top: 8px;
+      }
+      .big span {
+        font-weight: 900;
+        color: var(--lime);
+        letter-spacing: 0.2px;
+      }
+      .pulse {
+        animation: pulse 1s infinite;
+      }
+      @keyframes pulse {
+        0% {
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.6;
+        }
+      }
+
+      hr {
+        border: 0;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.12);
+        margin: 14px 0;
+      }
+
+      .stats {
+        font-size: 1.05rem;
+        line-height: 1.65;
+        opacity: 0.95;
+      }
+      .stats .label {
+        opacity: 0.75;
+      }
+      .stats b {
+        color: var(--accent2);
+        font-weight: 900;
+      }
+      .stats b[title] {
+        border-bottom: 1px dotted rgba(255, 255, 255, 0.35);
+        cursor: help;
+      }
+
+      .sectionTitle {
+        font-size: 1.05rem;
+        letter-spacing: 0.2px;
+        opacity: 0.85;
+        margin: 0 0 10px 0;
+      }
+
+      .skills {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .skill {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px 12px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.18);
+      }
+      .icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+        background: rgba(167, 139, 250, 0.14);
+        border: 1px solid rgba(167, 139, 250, 0.22);
+        color: var(--accent);
+        flex: 0 0 auto;
+      }
+      .skill h3 {
+        margin: 0;
+        font-size: 1.05rem;
+      }
+      .skill p {
+        margin: 2px 0 0 0;
+        opacity: 0.78;
+      }
+
+      /* Toast */
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 18px;
+        transform: translateX(-50%);
+        background: rgba(15, 15, 20, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 14px;
+        padding: 10px 14px;
+        font-size: 1rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.18s ease, transform 0.18s ease;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+        max-width: min(900px, 92vw);
+        text-align: center;
+        z-index: 999;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-4px);
+      }
+      .toast code {
+        background: rgba(0, 0, 0, 0.35);
+        padding: 2px 6px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* Egg W: Night Mode overlay */
+      .moonPanel::before {
+        content: "";
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        right: -120px;
+        top: -120px;
+        background: radial-gradient(
+          circle at 35% 35%,
+          rgba(255, 255, 255, 0.22),
+          rgba(255, 255, 255, 0.06) 55%,
+          transparent 70%
+        );
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+        filter: drop-shadow(0 0 20px rgba(96, 165, 250, 0.18));
+      }
+      .moonPanel.on::before {
+        opacity: 1;
+      }
+
+      .starRain {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        background: radial-gradient(
+              circle,
+              rgba(255, 255, 255, 0.8) 0 1px,
+              transparent 2px
+            )
+            0 0/120px 120px,
+          radial-gradient(
+              circle,
+              rgba(255, 255, 255, 0.55) 0 1px,
+              transparent 2px
+            )
+            60px 70px/160px 160px;
+        animation: drift 12s linear infinite;
+      }
+      .moonPanel.on .starRain {
+        opacity: 0.18;
+      }
+
+      @keyframes drift {
+        0% {
+          transform: translateY(0px);
+        }
+        100% {
+          transform: translateY(40px);
+        }
+      }
+
+      body.night {
+        background: radial-gradient(
+            1200px 900px at 20% 10%,
+            rgba(96, 165, 250, 0.18),
+            transparent 60%
+          ),
+          radial-gradient(
+            1200px 900px at 80% 20%,
+            rgba(167, 139, 250, 0.18),
+            transparent 60%
+          ),
+          radial-gradient(
+            1400px 1000px at 50% 100%,
+            rgba(52, 211, 153, 0.1),
+            transparent 60%
+          ),
+          #040610;
+      }
+      body.night .card {
+        border-color: rgba(167, 139, 250, 0.18);
+        box-shadow: 0 30px 120px rgba(167, 139, 250, 0.08),
+          0 20px 70px rgba(0, 0, 0, 0.45);
+      }
+
+      .footer {
+        margin-top: 16px;
+        text-align: center;
+        opacity: 0.55;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div>
+          <h1>Willow</h1>
+          <p class="sub">
+            Mode ninja nocturne — stats vivantes, et un secret lunaire.
+          </p>
+        </div>
+        <a class="btn" href="/">← retour au dashboard</a>
+      </header>
+
+      <div class="grid">
+        <!-- Left: live panel -->
+        <div class="card moonPanel" id="panel">
+          <div class="starRain"></div>
+
+          <div class="meta">
+            <div class="pill">📍 Né le <b id="bornDate"></b></div>
+            <div class="pill">⏱️ À <b id="bornTime"></b></div>
+            <div class="pill">🥷 Mode : <b id="modeNow">calme</b></div>
+          </div>
+
+          <div class="big" id="age"></div>
+
+          <hr />
+
+          <div class="stats" id="stats"></div>
+        </div>
+
+        <!-- Right: skills -->
+        <div class="card">
+          <p class="sectionTitle">Compétences (ninja progression)</p>
+          <div class="skills" id="skills"></div>
+        </div>
+      </div>
+
+      <div class="footer">🥚 Egg caché : Willow a un “night mode”.</div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      // Willow birth: 20/04/2019 01:30
+      const BIRTH = new Date(2019, 3, 20, 1, 30, 0);
+
+      function pad2(n) {
+        return String(n).padStart(2, "0");
+      }
+      function fr(n) {
+        return n.toLocaleString("fr-FR");
+      }
+
+      function formatBorn(d) {
+        return `${pad2(d.getDate())}/${pad2(
+          d.getMonth() + 1
+        )}/${d.getFullYear()}`;
+      }
+      function formatTime(d) {
+        return `${pad2(d.getHours())}h${pad2(d.getMinutes())}`;
+      }
+
+      function addYears(d, n) {
+        const x = new Date(d);
+        x.setFullYear(x.getFullYear() + n);
+        return x;
+      }
+      function addMonths(d, n) {
+        const x = new Date(d);
+        x.setMonth(x.getMonth() + n);
+        return x;
+      }
+      function addDays(d, n) {
+        const x = new Date(d);
+        x.setDate(x.getDate() + n);
+        return x;
+      }
+
+      function computeAgeParts(birth, now) {
+        let cursor = new Date(birth);
+
+        let years = 0;
+        while (addYears(cursor, 1) <= now) {
+          cursor = addYears(cursor, 1);
+          years++;
+        }
+
+        let months = 0;
+        while (addMonths(cursor, 1) <= now) {
+          cursor = addMonths(cursor, 1);
+          months++;
+        }
+
+        let days = 0;
+        while (addDays(cursor, 1) <= now) {
+          cursor = addDays(cursor, 1);
+          days++;
+        }
+
+        const diffMs = now - cursor;
+        const totalSeconds = Math.floor(diffMs / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        return { years, months, days, hours, minutes, seconds };
+      }
+
+      function liveStats(birth, now) {
+        const livedSeconds = Math.floor((now - birth) / 1000);
+
+        const bpm = 72;
+        const rpm = 15;
+        const blm = 17;
+
+        const heartbeats = Math.floor(livedSeconds * (bpm / 60));
+        const breaths = Math.floor(livedSeconds * (rpm / 60));
+        const blinks = Math.floor(livedSeconds * (blm / 60));
+
+        const livedDays = Math.floor(livedSeconds / 86400);
+        const livedWeeks = Math.floor(livedDays / 7);
+
+        let birthdays = now.getFullYear() - birth.getFullYear();
+        const thisYearBirthday = new Date(
+          now.getFullYear(),
+          birth.getMonth(),
+          birth.getDate()
+        );
+        if (now < thisYearBirthday) birthdays--;
+
+        return {
+          heartbeats,
+          breaths,
+          blinks,
+          livedDays,
+          livedWeeks,
+          birthdays,
+        };
+      }
+
+      function getNinjaMode(now) {
+        const h = now.getHours();
+        if (h >= 22 || h < 6) return "night ops";
+        if (h >= 6 && h < 12) return "stealth";
+        if (h >= 12 && h < 18) return "chaos doux";
+        return "shadow";
+      }
+
+      function renderSkills() {
+        const list = [
+          {
+            icon: "🥷",
+            title: "Stealth",
+            desc: "Se déplace sans bruit (sauf quand il veut).",
+          },
+          {
+            icon: "🧠",
+            title: "Mind tricks",
+            desc: "Convainc les adultes avec une logique… personnelle.",
+          },
+          {
+            icon: "⚡",
+            title: "Dash",
+            desc: "Accélération instantanée entre deux pièces.",
+          },
+          {
+            icon: "🎭",
+            title: "Infiltration",
+            desc: "Arrive au bon moment, pile quand on parle de lui.",
+          },
+          {
+            icon: "🛡️",
+            title: "Bouclier",
+            desc: "Résiste aux légumes. Parfois.",
+          },
+        ];
+        const box = document.getElementById("skills");
+        box.innerHTML = list
+          .map(
+            (s) => `
+        <div class="skill">
+          <div class="icon">${s.icon}</div>
+          <div>
+            <h3>${s.title}</h3>
+            <p>${s.desc}</p>
+          </div>
+        </div>
+      `
+          )
+          .join("");
+      }
+
+      // Toast
+      const toastEl = document.getElementById("toast");
+      let toastTimer = null;
+      function toast(msg) {
+        toastEl.innerHTML = msg;
+        toastEl.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1800);
+      }
+
+      // Egg: W toggles night mode + moon
+      const panel = document.getElementById("panel");
+      let eggOn = false;
+
+      window.addEventListener("keydown", (e) => {
+        const k = (e.key || "").toLowerCase();
+        if (k === "w") {
+          eggOn = !eggOn;
+          panel.classList.toggle("on", eggOn);
+          document.body.classList.toggle("night", eggOn);
+          toast(`🌙 Night Mode ${eggOn ? "ON" : "OFF"} <code>(W)</code>`);
+        }
+      });
+
+      // Init
+      document.getElementById("bornDate").textContent = formatBorn(BIRTH);
+      document.getElementById("bornTime").textContent = formatTime(BIRTH);
+      renderSkills();
+
+      function tick() {
+        const now = new Date();
+        const a = computeAgeParts(BIRTH, now);
+        const s = liveStats(BIRTH, now);
+
+        document.getElementById("modeNow").textContent = getNinjaMode(now);
+
+        document.getElementById("age").innerHTML = `
+        <span>${a.years}</span> ans, <span>${a.months}</span> mois, <span>${a.days}</span> jours<br>
+        <span>${a.hours}</span> h, <span>${a.minutes}</span> min, <span class="pulse">${a.seconds}</span> s
+      `;
+
+        document.getElementById("stats").innerHTML = `
+        <span class="label">❤️ cœur :</span> <b title="${fr(
+          s.heartbeats
+        )}">${fr(s.heartbeats)}</b> battements<br>
+        <span class="label">🌬️ souffle :</span> <b title="${fr(
+          s.breaths
+        )}">${fr(s.breaths)}</b> respirations<br>
+        <span class="label">👀 yeux :</span> <b title="${fr(s.blinks)}">${fr(
+          s.blinks
+        )}</b> clignements
+        <hr style="opacity:.15">
+        <span class="label">📅 jours vécus :</span> <b>${fr(
+          s.livedDays
+        )}</b><br>
+        <span class="label">🗓️ semaines :</span> <b>${fr(s.livedWeeks)}</b><br>
+        <span class="label">🎂 anniversaires :</span> <b>${s.birthdays}</b>
+      `;
+      }
+
+      tick();
+      setInterval(tick, 1000);
+
+      // Code secret (caché) : W
+    </script>
   </body>
 </html>
